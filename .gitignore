@@ -4,6 +4,8 @@ out/
 bin/
 .project
 .classpath
+.settings
 *.iml
 *.ipr
 *.iws
+.cache
