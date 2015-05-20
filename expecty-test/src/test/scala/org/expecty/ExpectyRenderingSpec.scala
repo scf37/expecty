@@ -352,23 +352,42 @@ Some(23) |  Some(22)
     }
   }
 
-  // doesn't compile, fix pending
-//  @Test
-//  def varargs_conversion() {
-//    outputs(
-//      """
-//fun1(List(1) :_*) == List(1)
-//|                 |
-//List(1)           true
-//      """)
-//    {
-//      def fun1(p: Int*) = p
-//
-//      expect {
-//        fun1(List(1) :_*) == List(1)
-//      }
-//    }
-//  }
+  @Test
+  def varargs_conversion() {
+    outputs(
+      """
+fun1(List(1) :_*) == List(2)
+|                 |  |
+List(1)           |  List(2)
+                  false
+      """)
+    {
+      def fun1(p: Int*) = p
+
+      expect {
+        fun1(List(1) :_*) == List(2)
+      }
+    }
+  }
+  
+    @Test
+  def varargs_conversion2() {
+      //TODO: print params as well.
+    outputs(
+      """
+fun1("boo", params :_*) == List(2)
+|                       |  |
+List(1)                 |  List(2)
+                        false
+      """)
+    {
+      def fun1(x: String, p: Int*) = p
+      val params = List(1)
+      expect {
+        fun1("boo", params :_*) == List(2)
+      }
+    }
+  }
 
   def outputs(rendering: String)(expectation: => Boolean) {
     def normalize(s: String) = s.trim().lines.mkString

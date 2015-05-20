@@ -1,4 +1,4 @@
-include 'expecty-core'
+include 'expecty'
 include 'expecty-test'
 
 rootProject.name = 'expecty'

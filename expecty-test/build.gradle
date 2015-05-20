@@ -1,5 +1,5 @@
 dependencies {
-  compile project(':expecty-core')
+  compile project(':expecty')
 
   testCompile "junit:junit:4.11"
   testRuntime "org.scala-lang:scala-library:2.11.6"

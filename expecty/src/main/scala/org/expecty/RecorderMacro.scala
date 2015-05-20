@@ -18,7 +18,7 @@ import scala.util.Properties
 
 class RecorderMacro[C <: Context](val context: C) {
   import context.universe._
-
+  
   def apply(recording: Expr[Boolean]): Expr[Boolean] = {
     context.Expr(Block(declareRuntime :: recordExpressions(recording.tree), completeRecording))
   }
@@ -61,15 +61,7 @@ Original AST    : $ast
 Instrumented AST: ${showRaw(instrumented)}")
 
     """)
-
-    Apply(
-      Select(
-        Ident(TermName("$org_expecty_recorderRuntime")),
-        TermName("recordExpression")),
-      List(
-        q"$text",
-        q"$ast",
-        instrumented))
+    q"$$org_expecty_recorderRuntime.recordExpression($text, $ast, $instrumented)"
   }
 
   private[this] def splitExpressions(recording: Tree): List[Tree] = recording match {
@@ -82,6 +74,8 @@ Instrumented AST: ${showRaw(instrumented)}")
     case Literal(_) => expr // don't record
     // don't record value of implicit "this" added by compiler; couldn't find a better way to detect implicit "this" than via point
     case Select(x@This(_), y) if getPosition(expr).point == getPosition(x).point => expr
+    //do NOT apply to func(args :_*)
+    case Typed(_, Ident(typeNames.WILDCARD_STAR)) => expr
     case x: Select if x.symbol.isModule => expr // don't try to record the value of packages
     case _ => recordValue(recordSubValues(expr), expr)
   }
@@ -95,11 +89,12 @@ Instrumented AST: ${showRaw(instrumented)}")
 
   private[this] def recordValue(expr: Tree, origExpr: Tree): Tree =
     if (origExpr.tpe.typeSymbol.isType)
-      Apply(
-        Select(
-          Ident(TermName("$org_expecty_recorderRuntime")),
-          TermName("recordValue")),
-        List(expr, Literal(Constant(getAnchor(origExpr)))))
+      q"$$org_expecty_recorderRuntime.recordValue($expr, ${getAnchor(origExpr)})"
+//      Apply(
+//        Select(
+//          Ident(TermName("$org_expecty_recorderRuntime")),
+//          TermName("recordValue")),
+//        List(expr, Literal(Constant(getAnchor(origExpr)))))
     else expr
 
   private[this] def getText(expr: Tree): String = getPosition(expr) match {

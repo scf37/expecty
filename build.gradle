@@ -1,12 +1,14 @@
+
 allprojects {
 
 	apply plugin: "scala"
 	apply plugin: "idea"
 	apply plugin: "eclipse"
 	apply plugin: "maven"
+	
 
-	version = "0.10"
-	group = "org.expecty"
+	version = "0.11"
+	group = "me.scf37.expecty"
 
 	repositories {
 	  mavenCentral()
