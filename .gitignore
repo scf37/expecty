@@ -11,3 +11,4 @@ bin/
 .cache
 .idea
 target
+.secret

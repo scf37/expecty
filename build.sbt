@@ -21,7 +21,15 @@ lazy val commonSettings = Seq(
 
 val expecty = project.settings(
   commonSettings,
-  libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+  libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
+  releaseTagComment := s"[ci skip]Releasing ${(version in ThisBuild).value}",
+  releaseCommitMessage := s"[ci skip]Setting version to ${(version in ThisBuild).value}",
+  resourceGenerators in Compile <+= buildProperties,
+
+  bintrayOmitLicense := true,
+
+  bintrayVcsUrl := Some("git@github.com:scf37/filewatch.git")
+
 )
 
 val expectyTest = (project in file("expecty-test"))
