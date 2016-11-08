@@ -40,4 +40,5 @@ val expectyTest = (project in file("expecty-test"))
 
 val root = (project in file("."))
   .settings(commonSettings)
+  .settings(publish := {})
   .aggregate(expecty, expectyTest)
