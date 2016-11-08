@@ -9,3 +9,5 @@ bin/
 *.ipr
 *.iws
 .cache
+.idea
+target

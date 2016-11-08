@@ -13,38 +13,37 @@
 */
 package org.expecty
 
-import org.junit.Test
+import org.scalatest.FunSuite
 
-class ExpectySpec {
+class ExpectySpec extends FunSuite {
   val expect = new Expecty()
   val name = "Hi from Expecty!"
 
-  @Test
-  def passingExpectation() {
+  test("passingExpectation") {
     expect(name.length == 16)
   }
 
-  @Test(expected = classOf[AssertionError])
-  def failingExpectation() {
-    expect(name.length() == 10)
+  test("failingExpectation") {
+    intercept[AssertionError] {
+      expect(name.length() == 10)
+    }
   }
 
-  @Test
-  def multiplePassingExpectations() {
+  test("multiplePassingExpectations") {
     expect(name.length == 16)
     expect(name.startsWith("Hi"))
     expect(name.endsWith("Expecty!"))
   }
 
-  @Test(expected = classOf[AssertionError])
-  def mixedPassingAndFailingExpectations() {
+  test("mixedPassingAndFailingExpectations") {
     expect(name.length == 16)
-    expect(name.startsWith("Ho"))
+    intercept[AssertionError] {
+      expect(name.startsWith("Ho"))
+    }
     expect(name.endsWith("Expecty!"))
   }
 
-  @Test
-  def passingMultiExpectation() {
+  test("passingMultiExpectation") {
     expect {
       name.length == 16
       name.startsWith("Hi")
@@ -52,24 +51,25 @@ class ExpectySpec {
     }
   }
 
-  @Test(expected = classOf[AssertionError])
-  def failingMultiExpectation() {
-    expect {
-      name.length == 16
-      name.startsWith("Ho")
-      name.endsWith("Expecty!")
+  test("failingMultiExpectation") {
+    intercept[AssertionError] {
+      expect {
+        name.length == 16
+        name.startsWith("Ho")
+        name.endsWith("Expecty!")
+      }
     }
   }
 
-  //TODO: needs assertion
-  @Test(expected = classOf[AssertionError])
-  def lateFailingExpectation() {
+  test("lateFailingExpectation") {
     def expect = new Expecty(failEarly = false)
 
-    expect {
-      name.length == 13
-      name.startsWith("Ho")
-      name.endsWith("Expcty!")
+    intercept[AssertionError] {
+      expect {
+        name.length == 13
+        name.startsWith("Ho")
+        name.endsWith("Expcty!")
+      }
     }
   }
 }

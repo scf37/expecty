@@ -1,4 +1,0 @@
-include 'expecty'
-include 'expecty-test'
-
-rootProject.name = 'expecty'

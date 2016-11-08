@@ -13,13 +13,15 @@
 */
 package org.expecty
 
-class Expecty(failEarly: Boolean = true, showTypes: Boolean = false,
-              printAsts: Boolean = false, printExprs: Boolean = false) extends Recorder {
+/**
+  *
+  * @param failEarly print only first failed expectation instead of all
+  * @param showTypes show expression types along with values
+  */
+class Expecty(failEarly: Boolean = true, showTypes: Boolean = false) extends Recorder {
   class ExpectyListener extends RecorderListener[Boolean] {
     override def expressionRecorded(recordedExpr: RecordedExpression[Boolean]) {
       lazy val rendering = new ExpressionRenderer(showTypes).render(recordedExpr)
-      if (printAsts) println(recordedExpr.ast + "\n")
-      if (printExprs) println(rendering)
       if (!recordedExpr.value && failEarly) {
         throw new AssertionError("\n\n" + rendering)
       }

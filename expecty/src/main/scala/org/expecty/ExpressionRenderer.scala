@@ -57,7 +57,21 @@ class ExpressionRenderer(showTypes: Boolean) {
   }
 
   private[this] def renderValue(value: Any): String = {
-    val str = if (value == null) "null" else value.toString
+    val str = value match {
+      case null => "null"
+        //special case for scala 2.12: lambdas are now compiled to java lambdas with horrible toString()
+      case v if v.getClass.getSuperclass == classOf[Object] && v.getClass.toString.contains("$$Lambda$") => v match {
+        case _: Function0[_] => "<function0>"
+        case _: Function1[_, _] => "<function1>"
+        case _: Function2[_, _, _] => "<function2>"
+        case _: Function3[_, _, _, _] => "<function3>"
+        case _: Function4[_, _, _, _, _] => "<function4>"
+        case _: Function5[_, _, _, _, _, _] => "<function5>"
+        case _ => "<function>"
+      }
+      case v => v.toString
+    }
+
     if (showTypes) str + " (" + value.getClass.getName + ")" // TODO: get type name the Scala way
     else str
   }

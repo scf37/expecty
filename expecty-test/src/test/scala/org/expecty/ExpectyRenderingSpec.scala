@@ -13,15 +13,13 @@
 */
 package org.expecty
 
-import org.junit.Assert._
-import org.junit.Test
-import junit.framework.ComparisonFailure
+import org.scalatest.FunSuite
 
-class ExpectyRenderingSpec {
-  val expect = new Expecty(printAsts = true)
+class ExpectyRenderingSpec extends FunSuite {
+  val expect = new Expecty()
 
-  @Test
-  def literals() {
+  
+  test("literals") {
     outputs("""
 "abc".length() == 2
       |        |
@@ -33,8 +31,7 @@ class ExpectyRenderingSpec {
     }
   }
 
-  @Test
-  def object_apply() {
+  test("object_apply") {
     outputs("""
 List() == List(1, 2)
        |  |
@@ -47,8 +44,7 @@ List() == List(1, 2)
     }
   }
 
-  @Test
-  def object_apply_2() {
+  test("object_apply_2") {
     outputs("""
 List(1, 2) == List()
 |          |
@@ -60,8 +56,7 @@ List(1, 2) false
     }
   }
 
-  @Test
-  def infix_operators() {
+  test("infix_operators") {
     val str = "abc"
 
     outputs("""
@@ -75,8 +70,7 @@ abc abcdef  false
     }
   }
 
-  @Test
-  def null_value() {
+  test("null_value") {
     val x = null
 
     outputs("""
@@ -91,8 +85,7 @@ null
     }
   }
 
-  @Test
-  def value_with_type_hint() {
+  test("value_with_type_hint") {
     val expect = new Expecty(showTypes = true)
     val x = "123"
 
@@ -108,8 +101,7 @@ x == 123
     }
   }
 
-  @Test
-  def arithmetic_expressions() {
+  test("arithmetic_expressions") {
     val one = 1
 
     outputs("""
@@ -123,8 +115,7 @@ one + 2 == 4
     }
   }
 
-  @Test
-  def property_read() {
+  test("property_read") {
     val person = Person()
 
     outputs("""
@@ -139,8 +130,7 @@ Person(Fred,42)
     }
   }
 
-  @Test
-  def method_call_zero_args() {
+  test("method_call_zero_args") {
     val person = Person()
 
     outputs("""
@@ -155,8 +145,7 @@ Person(Fred,42)
     }
   }
 
-  @Test
-  def method_call_one_arg() {
+  test("method_call_one_arg") {
     val person = Person()
     val word = "hey"
 
@@ -172,8 +161,7 @@ Person(Fred,42)
     }
   }
 
-  @Test
-  def method_call_multiple_args() {
+  test("method_call_multiple_args") {
     val person = Person()
     val word1 = "hey"
     val word2 = "ho"
@@ -190,8 +178,7 @@ Person(Fred,42)
     }
   }
 
-  @Test
-  def method_call_var_args() {
+  test("method_call_var_args") {
     val person = Person()
     val word1 = "foo"
     val word2 = "bar"
@@ -210,8 +197,7 @@ Person(Fred,42)
     }
   }
 
-  @Test
-  def nested_property_reads_and_method_calls() {
+  test("nested_property_reads_and_method_calls") {
     val person = Person()
 
     outputs("""
@@ -229,8 +215,7 @@ Person(Fred,42)
     }
   }
 
-  @Test
-  def constructor_call() {
+  test("constructor_call") {
     val brand = "BMW"
     val model = "M5"
 
@@ -245,8 +230,7 @@ BMW M5  BMW    M5     BMW   false
     }
   }
 
-  @Test
-  def higher_order_methods() {
+  test("higher_order_methods") {
     outputs("""
 a.map(_ * 2) == b
 | |  |  |    |  |
@@ -266,8 +250,7 @@ List(1, 2, 3)
     }
   }
 
-  @Test
-  def tuple() {
+  test("tuple") {
     outputs("""
 (1, 2)._1 == 3
 |      |  |
@@ -279,8 +262,7 @@ List(1, 2, 3)
     }
   }
 
-  @Test
-  def case_class() {
+  test("case_class") {
     outputs("""
 Some(1).map(_ + 1) == Some(3)
 |       |     |    |  |
@@ -295,8 +277,7 @@ Some(1) |     |    |  Some(3)
     }
   }
 
-  @Test
-  def class_with_package() {
+  test("class_with_package") {
     outputs("""
 collection.mutable.Map(1->"a").get(1) == "b"
                    |   ||      |      |
@@ -311,8 +292,7 @@ collection.mutable.Map(1->"a").get(1) == "b"
     }
   }
 
-  @Test
-  def java_static_method() {
+  test("java_static_method") {
     outputs("""
 java.util.Collections.emptyList() == null
                       |           |
@@ -324,8 +304,7 @@ java.util.Collections.emptyList() == null
     }
   }
 
-  @Test
-  def implicit_conversion() {
+  test("implicit_conversion") {
     outputs("""
 "fred".slice(1, 2) == "frog"
 |      |           |
@@ -337,8 +316,7 @@ fred   r           false
     }
   }
 
-  @Test
-  def option_type() {
+  test("option_type") {
     outputs(
       """
 Some(23) == Some(22)
@@ -352,8 +330,7 @@ Some(23) |  Some(22)
     }
   }
 
-  @Test
-  def varargs_conversion() {
+  test("varargs_conversion") {
     outputs(
       """
 fun1(List(1) :_*) == List(2)
@@ -370,8 +347,7 @@ List(1)           |  List(2)
     }
   }
   
-    @Test
-  def varargs_conversion2() {
+  test("varargs_conversion2") {
       //TODO: print params as well.
     outputs(
       """
@@ -402,7 +378,7 @@ List(1)                 |  List(2)
         System.err.println(e.getMessage)
         val actual = normalize(e.getMessage).replaceAll("@[0-9a-f]*", "@\\.\\.\\.")
         if (actual != expected) {
-          throw new ComparisonFailure("Expectation output doesn't match", expected, actual)
+          fail(s"Expectation output doesn't match:\nExpected: $expected\nActual:   $actual")
         }
       }
     }
