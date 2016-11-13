@@ -12,7 +12,7 @@ Expecty is licensed under the Apache 2 license.
 
 ```
 resolvers += "Scf37" at "https://dl.bintray.com/scf37/maven/"
-libraryDependencies += "me.scf37.expecty" %% "expecty" % "1.0.1"
+libraryDependencies += "me.scf37.expecty" %% "expecty" % "1.0.2"
 ```
 
 Scala 2.11 and 2.12 compatible.

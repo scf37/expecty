@@ -15,6 +15,7 @@ lazy val compilerOptions = Seq(
 lazy val commonSettings = Seq(
   scalaVersion := "2.12.0",
   crossScalaVersions := Seq("2.11.8", "2.12.0"),
+  releaseCrossBuild := true,
 
   scalacOptions := compilerOptions,
   releaseTagComment := s"[ci skip]Releasing ${(version in ThisBuild).value}",
